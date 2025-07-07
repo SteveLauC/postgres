@@ -43,3 +43,9 @@ lib*.pc
 /Release/
 /tmp_install/
 /portlock/
+
+# I run Postgres in this folder
+/data
+# I install all the Postgres build artifacts there
+# ./configure --prefix $(pwd)/install
+/install
