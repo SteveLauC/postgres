@@ -50,6 +50,10 @@ def initdb():
     run_command([initdb_path, "-D", DATA_DIR])
     data_path = os.path.join(os.getcwd(), DATA_DIR)
     os.system(f"cd {data_path} && echo '*' > .gitignore;")
+    
+def re_initdb():
+    os.system("rm -r data_dir")
+    initdb()
 
 def start_master():
     pg_ctl_path = os.path.join(os.getcwd(), INSTALL_DIR, "bin", "pg_ctl")
@@ -78,6 +82,7 @@ def show_help():
     print("  compile       - Compile the project.")
     print("  install       - Install the compiled project.")
     print("  initdb        - Initialize the PostgreSQL database cluster.")
+    print("  re-initdb     - Re-initialize the PostgreSQL database cluster.")
     print("  start-master  - Start the PostgreSQL master server.")
     print("  stop-master   - Stop the PostgreSQL master server.")
     print("  single        - Start PostgreSQL in single-user mode.")
@@ -99,6 +104,8 @@ def main():
         install_project()
     elif command == "initdb":
         initdb()
+    elif command == "re-initdb":
+        re_initdb()
     elif command == "start-master":
         start_master()
     elif command == "stop-master":
