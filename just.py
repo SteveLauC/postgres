@@ -3,6 +3,16 @@
 import os
 import subprocess
 import sys
+from typing import List, Union
+
+def sh(command: Union[str, List[str]]):
+    if isinstance(command, str):
+        os.system(command)
+    elif isinstance(command, List):
+        subprocess.run(command)
+    else:
+        raise TypeError("command should be either a string or an array of string")
+
 
 # Configuration variables
 POSTMASTER_PORT = "5433"
@@ -11,17 +21,6 @@ INSTALL_DIR = "install_dir"
 DATA_DIR = "data_dir"
 DATABASE = "postgres"
 
-def run_command(command, check_success=True, cwd=None):
-    print(f"Executing: {' '.join(command)}")
-    try:
-        result = subprocess.run(command, check=check_success, cwd=cwd)
-        return result
-    except subprocess.CalledProcessError as e:
-        print(f"Error executing command: {e}", file=sys.stderr)
-        sys.exit(1)
-    except FileNotFoundError:
-        print(f"Command not found: {command[0]}. Make sure it's in your PATH.", file=sys.stderr)
-        sys.exit(1)
 
 def setup():
     current_pwd = os.getcwd()
@@ -34,42 +33,42 @@ def setup():
     cmd_args.append(f"--prefix={current_pwd}/{INSTALL_DIR}")
     cmd_args.append("--debug")
 
-    run_command(cmd_args)
-   
+    sh(cmd_args)
+    os.system("")
 
 def compile_project():
-    run_command(["meson", "compile", "-C", MESON_BUILD_DIR])
+    sh(["meson", "compile", "-C", MESON_BUILD_DIR])
 
 def install_project():
-    run_command(["meson", "install", "-C", MESON_BUILD_DIR])
+    sh(["meson", "install", "-C", MESON_BUILD_DIR])
     install_path = os.path.join(os.getcwd(), INSTALL_DIR)
     os.system(f"cd {install_path} && echo '*' > .gitignore")
 
 def initdb():
     initdb_path = os.path.join(os.getcwd(), INSTALL_DIR, "bin", "initdb")
-    run_command([initdb_path, "-D", DATA_DIR])
+    sh([initdb_path, "-D", DATA_DIR])
     data_path = os.path.join(os.getcwd(), DATA_DIR)
-    os.system(f"cd {data_path} && echo '*' > .gitignore;")
+    sh(f"cd {data_path} && echo '*' > .gitignore;")
     
 def re_initdb():
-    os.system("rm -r data_dir")
+    sh("rm -r data_dir")
     initdb()
 
 def start_master():
     pg_ctl_path = os.path.join(os.getcwd(), INSTALL_DIR, "bin", "pg_ctl")
-    run_command([pg_ctl_path, "-D", DATA_DIR, "-o", f"-p {POSTMASTER_PORT}", "start"])
+    sh([pg_ctl_path, "-D", DATA_DIR, "-o", f"-p {POSTMASTER_PORT}", "start"])
 
 def stop_master():
     pg_ctl_path = os.path.join(os.getcwd(), INSTALL_DIR, "bin", "pg_ctl")
-    run_command([pg_ctl_path, "-D", DATA_DIR, "-o", f"-p {POSTMASTER_PORT}", "stop"])
+    sh([pg_ctl_path, "-D", DATA_DIR, "-o", f"-p {POSTMASTER_PORT}", "stop"])
 
 def single_user_mode():
     postgres_path = os.path.join(os.getcwd(), INSTALL_DIR, "bin", "postgres")
-    run_command([postgres_path, "--single", "-D", DATA_DIR, DATABASE])
+    sh([postgres_path, "--single", "-D", DATA_DIR, DATABASE])
 
 def connect_psql():
     psql_path = os.path.join(os.getcwd(), INSTALL_DIR, "bin", "psql")
-    run_command([psql_path, "--port", POSTMASTER_PORT, DATABASE])
+    sh([psql_path, "--port", POSTMASTER_PORT, DATABASE])
 
 def psql_session():
     start_master()
