@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import os
 import subprocess
@@ -78,15 +78,15 @@ def psql_session():
 def show_help():
     print("Available commands:")
     print("  setup         - Configure the build environment.")
-    print("  compile       - Compile the project.")
-    print("  install       - Install the compiled project.")
+    print("  compile(c)    - Compile the project.")
+    print("  install(i)    - Install the compiled project.")
     print("  initdb        - Initialize the PostgreSQL database cluster.")
     print("  re-initdb     - Re-initialize the PostgreSQL database cluster.")
     print("  start-master  - Start the PostgreSQL master server.")
     print("  stop-master   - Stop the PostgreSQL master server.")
     print("  single        - Start PostgreSQL in single-user mode.")
     print("  conn          - Connect to the PostgreSQL database using psql.")
-    print("  psql          - Start master, connect with psql, then stop master.")
+    print("  psql(p)       - Start master, connect with psql, then stop master.")
     print("  help          - Show this help message.")
 
 def main():
@@ -97,9 +97,9 @@ def main():
     command = sys.argv[1]
     if command == "setup":
         setup()
-    elif command == "compile":
+    elif command == "compile" or command == "c":
         compile_project()
-    elif command == "install":
+    elif command == "install" or command == "i":
         install_project()
     elif command == "initdb":
         initdb()
@@ -113,7 +113,7 @@ def main():
         single_user_mode()
     elif command == "conn":
         connect_psql()
-    elif command == "psql":
+    elif command == "psql" or command == "p":
         psql_session()
     elif command == "help" or command == "--help" or command == "-h":
         show_help()
