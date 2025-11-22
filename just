@@ -75,11 +75,16 @@ def psql_session():
     connect_psql()
     stop_master()
 
+def run_project():
+    compile_project() 
+    install_project() 
+    psql_session() 
+
 def show_help():
     print("Available commands:")
     print("  setup         - Configure the build environment.")
     print("  compile(c)    - Compile the project.")
-    print("  install(i)    - Install the compiled project.")
+    print("  install(i)    - Compile the project if needed, then install the compiled project.")
     print("  initdb        - Initialize the PostgreSQL database cluster.")
     print("  re-initdb     - Re-initialize the PostgreSQL database cluster.")
     print("  start-master  - Start the PostgreSQL master server.")
@@ -87,6 +92,7 @@ def show_help():
     print("  single        - Start PostgreSQL in single-user mode.")
     print("  conn          - Connect to the PostgreSQL database using psql.")
     print("  psql(p)       - Start master, connect with psql, then stop master.")
+    print("  run(r)        - Compile, install, then run it")
     print("  help          - Show this help message.")
 
 def main():
@@ -115,6 +121,8 @@ def main():
         connect_psql()
     elif command == "psql" or command == "p":
         psql_session()
+    elif command == "run" or command == "r":
+        run_project()
     elif command == "help" or command == "--help" or command == "-h":
         show_help()
     else:
