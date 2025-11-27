@@ -1298,8 +1298,8 @@ preprocess_expression(PlannerInfo *root, Node *expr, int kind)
 	 * we may extract from the joinaliasvars lists have not been preprocessed.
 	 * For example, if we did this after sublink processing, sublinks expanded
 	 * out from join aliases would not get processed.  But we can skip this in
-	 * non-lateral RTE functions, VALUES lists, and TABLESAMPLE clauses, since
-	 * they can't contain any Vars of the current query level.
+	 * non-lateral RTE functions, VALUES lists, TABLESAMPLE, and TABLEFUNC
+	 * clauses, since they can't contain any Vars of the current query level.
 	 */
 	if (root->hasJoinRTEs &&
 		!(kind == EXPRKIND_RTFUNC ||
